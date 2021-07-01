@@ -5,6 +5,7 @@ from requests.api import get, post
 import ahri.env
 import requests
 from bs4 import BeautifulSoup
+from colorama import Fore
 
 def __init__():
     global posted_urls
@@ -23,7 +24,7 @@ def ScrapePatchNotes():
     try:
         patch_notes_page = requests.get(patch_notes_url,timeout = 60)
     except Exception as error:
-        print("! Unable to connect ({}).".format(error.__class__.__name__))
+        print(Fore.RED + "! Unable to connect ({}).".format(error.__class__.__name__) + Fore.WHITE)
         # We can just return an empty list if we cannot connect, as the program should proceed as if nothing new has been found
         return found_patches
 
@@ -39,7 +40,7 @@ def ScrapePatchNotes():
              
             found_patches.insert(0,(entry_title,entry_link))    
         
-    print("Done.")
+    print(Fore.GREEN + "Done." + Fore.WHITE)
 
     # Remove any patch notes that have already been posted in the past
     found_patches = PrunePatchNotes(found_patches)
@@ -67,12 +68,12 @@ def PrunePatchNotes(patches_list):
                     patches_list.pop(patches_list.index(entry))
                     break
 
-        print("Done.")
+        print(Fore.GREEN + "Done." + Fore.WHITE)
 
         return patches_list
     except FileNotFoundError:
         # If a posted.txt file doesn't exist, then we can return the list as is, as they'll all be new by the time we post it and write it to file
-        print("Done.")
+        print(Fore.GREEN + "Done." + Fore.WHITE)
         return patches_list
 
 
@@ -97,7 +98,7 @@ def PostMessage(title,url):
         "content" : message_body
     }
 
-    print("Posting message for {} ... ".format(title),end="")
+    print("Posting message for {} ... ".format(Fore.CYAN + title + Fore.WHITE),end="")
     
     try:
         # We do not need to account for a webhook not existing, as it is checked for at startup
@@ -114,7 +115,7 @@ def PostMessage(title,url):
         # Message ID has been returned by Discord, meaning it has been posted successfully.
         if recieved.get("id",0): 
             posted_urls.append(url)
-            print("Done. (Message ID {})".format(recieved.get("id",0)))
+            print(Fore.GREEN + "Done. (Message ID {})".format(recieved.get("id",0)) + Fore.WHITE)
 
             # If we are about to be rate limited by Discord, we will need to wait for however long is specified
             remaining_requests = int(sent_message.headers["X-RateLimit-Remaining"])
@@ -122,11 +123,11 @@ def PostMessage(title,url):
             if remaining_requests == 0:
                 sleep(request_reset_wait)
         else:
-            print("! Failed to send. (HTTP {})".format(str(sent_message.status_code)))
+            print(Fore.RED + "! Failed to send. (HTTP {})".format(str(sent_message.status_code)) + Fore.WHITE)
             #TODO: log URLs that have failed to send for later attempts.
 
     except Exception as error:
-            print("! Unable to connect ({}).".format(error.__class__.__name__))
+            print(Fore.RED + "! Unable to connect ({}).".format(error.__class__.__name__) + Fore.WHITE)
 
         
 
@@ -140,4 +141,4 @@ def LogPostedEntries():
     log_file.close()
 
     posted_urls.clear()
-    print("Done.")
+    print(Fore.GREEN + "Done." + Fore.WHITE)

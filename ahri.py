@@ -2,6 +2,7 @@ import ahri.env
 import ahri.requests
 from datetime import datetime
 from time import sleep
+from colorama import Fore
 
 def GetCurrentTimeString():
     return "{}".format(datetime.now().time().strftime("%H:%M:%S"))
@@ -9,7 +10,7 @@ def GetCurrentTimeString():
 
 
 while True:
-    print("\n[{}]".format(GetCurrentTimeString()))
+    print(Fore.YELLOW + "\n[{}]".format(GetCurrentTimeString()) + Fore.WHITE)
 
     patches = []
     patches = ahri.requests.ScrapePatchNotes()
@@ -18,7 +19,7 @@ while True:
         print("{} new Patch Note post(s) have been found:".format(len(patches)))
 
         for entry in patches:
-            print("    - {} : {}".format(entry[0],entry[1]))
+            print("    - {} : {}".format(entry[0],Fore.CYAN + entry[1] + Fore.WHITE))
 
         print()
 
@@ -29,5 +30,5 @@ while True:
     else:
         print("No new Patch Note entries have been found.")
 
-    print("All done!\n\n")
+    print(Fore.YELLOW + "All done!\n\n" + Fore.WHITE)
     sleep(int(ahri.env.Get("QUERY_RATE",600)))

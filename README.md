@@ -1,6 +1,6 @@
 # Ahri
 
-![](./readme/demo.png)
+![](./readme/demo.gif)
 
 Ahri is a web-scraping bot written in Python for sharing *League of Legends* updates via Discord. When the bot is run, it will scrape the *League of Legends* Patch Notes webpage for new entries at a given interval, and will post to a Discord channel of the user's choosing whenever new updates have been made:
 
