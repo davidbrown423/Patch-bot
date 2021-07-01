@@ -75,7 +75,7 @@ A custom message can be specified for the bot to post when new patch notes are d
 If you would like to include information about the patch notes being posted, such as its title or URL, the following tags can be used in the message, which will be replaced with the following before being posted:
 
 TAG | DESCRIPTION
--   | -
+---   | ----
 {TITLE}          | The title of the patch notes being posted, as specified in its webpage.
 {AT_SUBSCRIBERS} | Mention the subscriber role if one exists. (See *SUBSCRIBER_ROLE*).
 {LINK}           | The URL to the patch notes being posted.
