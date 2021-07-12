@@ -10,6 +10,8 @@ from colorama import Fore
 def __init__():
     global posted_urls
     posted_urls = []
+    global failed_posts
+    failed_posts = []
 
 
 
@@ -78,6 +80,19 @@ def PrunePatchNotes(patches_list):
 
 
 
+def ResolveFailedPosts():
+    # If we have have any succesfully scraped posts that could not send previously we will try to send them again.
+    if len(failed_posts) > 0:
+        posts = failed_posts.copy()
+        failed_posts.clear()
+
+        print(Fore.CYAN + "Attempting to post previously unsuccessful entries." + Fore.WHITE)
+        for post in posts:
+            PostMessage(post[0],post[1])
+
+        LogPostedEntries()
+        print()
+
 def PostMessage(title,url):
     # Pull and prepare patch note message
     message_body = ahri.env.Get("UPDATE_MESSAGE",
@@ -124,10 +139,10 @@ def PostMessage(title,url):
                 sleep(request_reset_wait)
         else:
             print(Fore.RED + "! Failed to send. (HTTP {})".format(str(sent_message.status_code)) + Fore.WHITE)
-            #TODO: log URLs that have failed to send for later attempts.
-
+            failed_posts.append((title,url))
     except Exception as error:
             print(Fore.RED + "! Unable to connect ({}).".format(error.__class__.__name__) + Fore.WHITE)
+            failed_posts.append((title,url))
 
         
 
