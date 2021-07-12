@@ -26,7 +26,6 @@ while True:
         print()
 
         for entry in patches:
-            input("preees enter")
             ahri.requests.PostMessage(entry[0],entry[1])
 
         ahri.requests.LogPostedEntries()
