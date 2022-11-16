@@ -133,10 +133,11 @@ def PostMessage(title,url):
             print(Fore.GREEN + "Done. (Message ID {})".format(recieved.get("id",0)) + Fore.WHITE)
 
             # If we are about to be rate limited by Discord, we will need to wait for however long is specified
-            remaining_requests = int(sent_message.headers["X-RateLimit-Remaining"])
-            request_reset_wait = ceil(float(sent_message.headers["X-RateLimit-Reset-After"]))
-            if remaining_requests == 0:
-                sleep(request_reset_wait)
+            if ("X-RateLimit-Remaining" in sent_message.headers) and ("X-RateLimit-Reset-After" in sent_message.headers):
+                remaining_requests = int(sent_message.headers["X-RateLimit-Remaining"])
+                request_reset_wait = ceil(float(sent_message.headers["X-RateLimit-Reset-After"]))
+                if remaining_requests == 0:
+                    sleep(request_reset_wait)
         else:
             print(Fore.RED + "! Failed to send. (HTTP {})".format(str(sent_message.status_code)) + Fore.WHITE)
             failed_posts.append((title,url))
