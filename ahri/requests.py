@@ -35,11 +35,10 @@ def ScrapePatchNotes():
         patch_entry_classes = BeautifulSoup(patch_notes_page.text,"html.parser").find_all("a", href=True)
     
         for entry in patch_entry_classes:
-            # Grab Patch notes title in plaintext from the first h2 element found.
-            entry_title = entry.find("h2").contents[0]
+            # Grab Patch notes title in plaintext by finding a div with a data-testid attribute value of 'card-title'
+            entry_title = entry.find('div', attrs={'data-testid': 'card-title'}).contents[0]
             # Grab the suffix for the Patch notes' URL to append to the original request URL.
             entry_link = patch_notes_prefix + entry["href"]
-             
             found_patches.insert(0,(entry_title,entry_link))    
         
     print(Fore.GREEN + "Done." + Fore.WHITE)
