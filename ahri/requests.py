@@ -44,13 +44,30 @@ def ScrapePatchNotes():
     print(Fore.GREEN + "Done." + Fore.WHITE)
 
     # Remove any patch notes that have already been posted in the past
-    found_patches = PrunePatchNotes(found_patches)
+    found_patches = PruneExistingPatchNotes(found_patches)
+    # Remove any links to Champion pages.
+    found_patches = PruneChampionPageLinks(found_patches)
 
     return found_patches
 
 
 
-def PrunePatchNotes(patches_list):
+def PruneChampionPageLinks(patches_list):
+    print("Pruning champion page links ... ",end="")
+
+    valid_entries = []
+
+    for entry in patches_list:
+        if "en-us/champions" not in entry[1]:
+            valid_entries.append(entry)
+
+    print(Fore.GREEN + "Done." + Fore.WHITE)
+    
+    return valid_entries
+
+
+
+def PruneExistingPatchNotes(patches_list):
     posted = []
 
     print("Pruning existing patch note entries ... ",end="")
